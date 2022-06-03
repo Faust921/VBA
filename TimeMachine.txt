@@ -1,0 +1,706 @@
+Option Explicit
+Dim MasterFile As Variant
+Dim ResponseFile As Variant
+Dim DnjpFile As Variant
+Dim RiskyFile As Variant
+Dim NapcFile As Variant
+Dim UtilFile As Variant
+Dim RunoutFile As Variant
+Dim RunoutPivotFile As Variant
+Dim RespTempFile As Variant
+Public wbmaster As Workbook
+Public wbresponse As Workbook
+Public wbrisky As Workbook
+Public wbnewpart As Workbook
+Public wbdnjp As Workbook
+Public wbnapc As Workbook
+Public wbpnutil As Workbook
+Public wbcpmast As Workbook
+Public wbsucomp As Workbook
+Public wbresptemp As Workbook
+Public wbrunout As Workbook
+Public wbrunoutpivot As Workbook
+Public wsmaster As Worksheet
+Public wsresponse As Worksheet
+Public wsnewpart As Worksheet
+Public wsdnjp As Worksheet
+Public wsrisky As Worksheet
+Public wsnapc As Worksheet
+Public wspnutin As Worksheet
+Public wspnutdm As Worksheet
+Public wspntemp As Worksheet
+Public wspnbuyr As Worksheet
+Public wscpmast As Worksheet
+Public wssucomp As Worksheet
+Public wsresptemp As Worksheet
+Public wsrunout As Worksheet
+Public wsrunoutpivot As Worksheet
+Private Sub takeFive()
+    Application.DisplayStatusBar = True
+    Application.ActiveSheet.Cells.Interior.ColorIndex = 4
+    Application.Wait (Now + TimeValue("0:00:05"))
+    Application.StatusBar = "Take Five Baby"
+    Application.ActiveSheet.Cells.Interior.ColorIndex = 0
+End Sub
+Sub openSUCOMPFile()
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\00. CRITICAL ISSUES\202012 Semiconductor Fab"
+'open file
+    SUCOMPFile = Application.GetOpenFilename()
+        If SUCOMP <> False Then
+            Set wbsucomp = Workbooks.Open(Filename:=SUCOMPFile)
+            Set wssucomp = wbsucomp.Worksheets(1)
+            'select 3rd worksheet
+            Worksheets(1).Select
+        End If
+End Sub
+Sub openCPMASTFile()
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\00. CRITICAL ISSUES\202012 Semiconductor Fab"
+'open file
+    CPMASTFile = Application.GetOpenFilename()
+        If CPMASTFile <> False Then
+            Set wbcpmast = Workbooks.Open(Filename:=CPMASTFile)
+            Set wscpmast = wbcpmast.Worksheets(1)
+            'select 1st worksheet
+            Worksheets(1).Select
+        End If
+End Sub
+Sub openMasterFile()
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\00. CRITICAL ISSUES\202012 Semiconductor Fab"
+'open file
+    MasterFile = Application.GetOpenFilename()
+        If MasterFile <> False Then
+            Set wbmaster = Workbooks.Open(Filename:=MasterFile)
+            Set wsmaster = wbmaster.Worksheets(4)
+            'wsmaster.Columns.EntireColumn.Hidden = False
+            'wsmaster.rows.EntireRow.Hidden = False
+        End If
+End Sub
+Sub openResponseWorkbook()
+'select and open file
+    ResponseFile = Application.GetOpenFilename()
+        If ResponseFile <> False Then
+             Set wbresponse = Workbooks.Open(Filename:=ResponseFile)
+             Set wsresponse = wbresponse.Worksheets(1)
+        End If
+End Sub
+Sub ACTIVATE_MASTER()
+wbmaster.Activate
+End Sub
+Sub ACTIVATE_SOURCE()
+wbsource.Activate
+End Sub
+Sub openRiskyPartsFile()
+'open file
+    RiskyFile = Application.GetOpenFilename()
+        If RiskyFile <> False Then
+            Set wbrisky = Workbooks.Open(Filename:=RiskyFile)
+            Set wsrisky = wbrisky.Worksheets(1)
+       'select 1st worksheet
+            Worksheets(1).Select
+        End If
+End Sub
+Sub TheRiskyRiskyPartsOpening()
+Dim RiskyFile As Variant
+Dim wbrisky As Workbook
+'open file
+    RiskyFile = Application.GetOpenFilename()
+        If RiskyFile <> False Then
+            Set wbrisky = Workbooks.Open(Filename:=RiskyFile)
+            'select 1st worksheet
+            Worksheets(1).Select
+            'lastrowtarget = wsmaster.Cells(Rows.Count, 1).End(xlUp).Row
+            'lastrowsource = wsrisky.Cells(Rows.Count, 1).End(xlUp).Row
+            Debug.Print lastrowsource & " " & lastrowtarget
+            
+        End If
+End Sub
+Sub openDnjpFile()
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\00. CRITICAL ISSUES\202012 Semiconductor Fab"
+'open file
+    DnjpFile = Application.GetOpenFilename()
+        If DnjpFile <> False Then
+            Set wbdnjp = Workbooks.Open(Filename:=DnjpFile)
+            Set wsdnjp = wbdnjp.Worksheets(3)
+            'select 3rd worksheet
+            Worksheets(3).Select
+        End If
+End Sub
+Sub openNapcFile()
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\00. CRITICAL ISSUES\202012 Semiconductor Fab"
+'open file
+    NapcFile = Application.GetOpenFilename()
+        If NapcFile <> False Then
+            Set wbnapc = Workbooks.Open(Filename:=NapcFile)
+            Set wsnapc = wbnapc.Worksheets(1)
+            'select 1st worksheet
+            Worksheets(1).Select
+        End If
+End Sub
+Sub openUtilFile()
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\15. CRITCAL PARTS NOTES"
+'open file
+    UtilFile = Application.GetOpenFilename()
+        If UtilFile <> False Then
+            Set wbpnutil = Workbooks.Open(Filename:=UtilFile)
+            Set wspnutin = wbpnutil.Worksheets(1)
+            Set wspnutdm = wbpnutil.Worksheets(2)
+            Set wspntemp = wbpnutil.Worksheets(3)
+            Set wspnbuyr = wbpnutil.Worksheets(4)
+         End If
+    'Schedules a procedure to be run at a specified time in the future
+    '(either at a specific time of day or after a specific amount of time has passed).
+    Application.OnTime Now + TimeValue("00:00:01"), "takeFive"
+End Sub
+Sub openRespTempFile() 'ready for use
+ChDrive "Z:"
+ChDir "Z:\NAPG\06. Planning\01. Risk Management\00. CRITICAL ISSUES\202012 Semiconductor Fab"
+'open file
+    RespTempFile = Application.GetOpenFilename()
+        If RespTempFile <> False Then
+            Set wbresptemp = Workbooks.Open(Filename:=RespTempFile)
+            Set wsresptemp = wbresptemp.Worksheets(1)
+            'select 1rd worksheet
+            Worksheets(1).Select
+        End If
+End Sub
+Option Explicit
+Sub ChooseFolder() 'ready for use
+Dim dlgSaveFolder As FileDialog
+Dim sFolderPathForSave As String
+Dim vaArray     As Variant
+Dim i           As Integer
+Dim oFile       As Object
+Dim oFSO        As Object
+Dim oFolder     As Object
+Dim oFiles      As Object
+'''
+'Open a Folder picker dialog box.
+Set dlgSaveFolder = Application.FileDialog(msoFileDialogFolderPicker)
+With dlgSaveFolder
+.Title = "Select a Folder"
+.AllowMultiSelect = False
+.InitialFileName = ThisWorkbook.Path & "\"
+If .Show <> -1 Then GoTo CancelFolderSelection
+sFolderPathForSave = .SelectedItems(1)
+End With
+Set dlgSaveFolder = Nothing
+'get file names in folder and store to array
+Set oFSO = CreateObject("Scripting.FileSystemObject")
+Set oFolder = oFSO.GetFolder(sPath)
+Set oFiles = oFolder.Files
+
+    If oFiles.Count = 0 Then Exit Function
+
+        ReDim vaArray(1 To oFiles.Count)
+        i = 1
+        For Each oFile In oFiles
+            vaArray(i) = oFile.Name
+            i = i + 1
+    Next
+CancelFolderSelection:
+'save template as
+    If (xFileName <> "") Or (xFileName <> "False") Then
+  ActiveWorkbook.SaveAs Filename:=xFileName
+End If
+Application.DisplayAlerts = True
+    
+End Sub
+Sub makeBlankInvestigationCopy()
+Dim xFileName As String
+Application.DisplayAlerts = False
+If Right(ActiveWorkbook.Name, 4) = "xlsm" Then
+  xFileName = Application.GetSaveAsFilename(ActiveWorkbook.Name, "Excel Macro-Enabled Workbook (*.xlsm),*.xlsm")
+Else
+  xFileName = Application.GetSaveAsFilename(ActiveWorkbook.Name, "Excel Workbook (*.xlsx),*.xlsx")
+End If
+If (xFileName <> "") Or (xFileName <> "False") Then
+  ActiveWorkbook.SaveAs Filename:=xFileName
+End If
+Application.DisplayAlerts = True
+End Sub
+Sub InvestFileMakeAll()
+'open tempate file
+Call runNewInvFolderMake
+'open old directory and get names
+Call ChooseFolder
+
+'open new diretory and save tempate as
+
+
+
+End Sub
+Function listfiles(ByVal sPath As String)
+
+    Dim vaArray     As Variant
+    Dim i           As Integer
+    Dim oFile       As Object
+    Dim oFSO        As Object
+    Dim oFolder     As Object
+    Dim oFiles      As Object
+
+    Set oFSO = CreateObject("Scripting.FileSystemObject")
+    Set oFolder = oFSO.GetFolder(sPath)
+    Set oFiles = oFolder.Files
+
+    If oFiles.Count = 0 Then Exit Function
+
+    ReDim vaArray(1 To oFiles.Count)
+    i = 1
+    For Each oFile In oFiles
+        vaArray(i) = oFile.Name
+        i = i + 1
+    Next
+End Function
+Sub openRunoutFile()
+Dim lastrowrunout As Integer
+Dim lastrowmaster As Integer
+
+'open file
+    RunoutFile = Application.GetOpenFilename()
+        If RunoutFile <> False Then
+            Set wbrunout = Workbooks.Open(Filename:=RunoutFile)
+            'Set wsrunout = wbrunout.Worksheets(2)
+                End If
+        'lastrowrunout = wbrunout.Worksheets(2).Cells(rows.Count, "N").End(xlUp).Row
+        'lastrowsource = wsresponse.Cells(rows.Count, 1).End(xlUp).Row
+End Sub
+Sub openRunoutPivotFile()
+Dim lastrowrunoutpivot As Integer
+Dim lastrowmasterpivot As Integer
+
+'open file
+    RunoutPivotFile = Application.GetOpenFilename()
+        If RunoutPivotFile <> False Then
+            Set wbrunoutpivot = Workbooks.Open(Filename:=RunoutPivotFile)
+            Set wsrunoutpivot = wbrunoutpivot.Worksheets(7)
+                End If
+        'lastrowrunoutpivot = wbrunoutpivot.Worksheets(2).Cells(rows.Count, "B").End(xlUp).Row
+End Sub
+Sub ApplyResponse() 'production ready
+Dim i As Integer
+Dim j As Integer
+Dim k As Integer
+Dim m As Integer
+Dim w As Integer
+Dim found As Integer
+Dim distributor As String
+Dim source_stock As Long
+Dim source_trans As Long
+Dim target_stock As Long
+Dim target_trans As Long
+Dim source_tot As Long
+Dim master_tot As Long
+Dim lastrowtarget As Integer
+Dim lastrowsource As Integer
+Dim lastrowpntemp As Integer
+Dim sourcepartnumber As String
+Dim sourceplant As String
+Dim sourcedistributor As String
+'initialize quality check between suppliers
+source_stock = 0
+source_trans = 0
+target_stock = 0
+target_trans = 0
+lastrowtarget = wbmaster.Worksheets(4).Cells(rows.Count, "N").End(xlUp).Row
+lastrowsource = wsresponse.Cells(rows.Count, 1).End(xlUp).Row
+Debug.Print lastrowtarget, lastrowsource
+    For i = 2 To lastrowsource
+        sourcepartnumber = wsresponse.Cells(i, 5).Value
+        sourceplant = wsresponse.Cells(i, 1).Value
+        sourcedistributor = wsresponse.Cells(i, 2).Value
+        For j = 3 To lastrowtarget
+        'Range(wsmaster.Cells(j, 17)).Select
+            If (wsmaster.Cells(j, 14).Value = sourcepartnumber) And (wsmaster.Cells(j, 10).Value = sourceplant) And (wsmaster.Cells(j, 11).Value = sourcedistributor) Then
+                wsmaster.Cells(j, 17).Value = wsresponse.Cells(i, 8).Value
+                wsmaster.Cells(j, 18).Value = wsresponse.Cells(i, 9).Value
+                wsmaster.Cells(j, 19).Value = wsresponse.Cells(i, 10).Value
+                wsmaster.Cells(j, 20).Value = wsresponse.Cells(i, 11).Value
+                wsmaster.Cells(j, 21).Value = wsresponse.Cells(i, 12).Value
+                source_stock = source_stock + Int(wsresponse.Cells(i, 9).Value)
+                source_trans = source_trans + Int(wsresponse.Cells(i, 10).Value)
+                target_stock = target_stock + Int(wsmaster.Cells(j, 18).Value)
+                target_trans = target_trans + Int(wsmaster.Cells(j, 19).Value)
+                distributor = wsmaster.Cells(j, 11).Value
+                'store the last rows carover - name exct.
+                Debug.Print sourcepartnumber & " was found"
+                Exit For
+            End If
+        Next j
+NotFound:
+        Debug.Print sourcepartnumber & " written to temp"
+        'Write to the temp list here"
+        lastrowpntemp = wspntemp.Cells(rows.Count, "N").End(xlUp).Row
+        w = lastrowpntemp + 1
+        wspntemp.Cells(w, 3).Value = "New"
+        wspntemp.Cells(w, 6).Value = "No"
+        wspntemp.Cells(w, 10).Value = sourceplant
+        wspntemp.Cells(w, 11).Value = sourcedistributor
+        wspntemp.Cells(w, 13).Value = wsresponse.Cells(i, 2).Value 'supplier code
+        wspntemp.Cells(w, 14).Value = sourcepartnumber
+        wspntemp.Cells(w, 17).Value = wsresponse.Cells(i, 8).Value 'critical Y/N
+        wspntemp.Cells(w, 18).Value = wsresponse.Cells(i, 9).Value ' WH
+        wspntemp.Cells(w, 19).Value = wsresponse.Cells(i, 10).Value 'Transit
+        wspntemp.Cells(w, 20).Value = wsresponse.Cells(i, 11).Value 'RUNOUT DATE (PC)
+        wspntemp.Cells(w, 21).Value = wsresponse.Cells(i, 12).Value 'cause
+        wspntemp.Cells(w, 21).Value = wsresponse.Cells(i, 12).Value 'counter
+               source_stock = source_stock + Int(wsresponse.Cells(i, 9).Value)
+               source_trans = source_trans + Int(wsresponse.Cells(i, 10).Value)
+               target_stock = target_stock + Int(wsmaster.Cells(j, 18).Value)
+               target_trans = target_trans + Int(wsmaster.Cells(j, 19).Value)
+                sourcepartnumber = ""
+                sourceplant = ""
+                sourcedistributor = ""
+    Next i
+Debug.Print "Check for New"
+
+'find NEW PN
+For k = 2 To w ' temp
+    For m = 3 To lastrowtarget ' master
+        If wspntemp.Cells(k, 14).Value = wsmaster.Cells(m, 14).Value Then
+        wspntemp.Cells(k, 3).Value = "Found - Not New"
+        found = found + 1
+            Exit For
+        End If
+    Next m
+Next k
+
+
+Debug.Print w - 1; " pn in response"
+Debug.Print found; " pn in master"
+'distributor = ""
+'WriteFromTemp
+'count temp rows
+'loop 1 to rows
+'Row(j).Insert , lFormatFromLeftOrAbove
+'paste to end of list
+'select range
+'sort
+
+
+source_tot = source_stock + source_trans
+master_tot = target_stock + target_trans
+Debug.Print "Source Total " & source_tot
+Debug.Print "Master Total " & master_tot
+Application.DisplayStatusBar = True
+Application.StatusBar = "Totals S/T " & source_tot & "/" & master_tot
+Debug.Print "End"
+
+'lastrowtarget = 0
+End Sub
+Sub NewPart(i)
+    Dim lastnewpartrow As Integer
+    Dim k As Integer
+    Set wbnewpart = ThisWorkbook
+    Set wsnewpart = wbnewpart.Worksheets(2)
+    lastnewpartrow = wsnewpart.Cells(rows.Count, 1).End(xlUp).Row
+    k = lastnewpartrow + 1
+    'select 2nd worksheet
+    Worksheets(2).Select
+    wsnewpart.Cells(k, 1).Value = wsresponse.Cells(i, 1).Value
+    wsnewpart.Cells(k, 2).Value = wsresponse.Cells(i, 2).Value
+    wsnewpart.Cells(k, 3).Value = wsresponse.Cells(i, 3).Value
+    wsnewpart.Cells(k, 4).Value = wsresponse.Cells(i, 4).Value
+    wsnewpart.Cells(k, 5).Value = wsresponse.Cells(i, 5).Value
+    wsnewpart.Cells(k, 6).Value = wsresponse.Cells(i, 6).Value
+    wsnewpart.Cells(k, 7).Value = wsresponse.Cells(i, 7).Value
+    wsnewpart.Cells(k, 8).Value = wsresponse.Cells(i, 8).Value
+    wsnewpart.Cells(k, 9).Value = wsresponse.Cells(i, 9).Value
+    wsnewpart.Cells(k, 10).Value = wsresponse.Cells(i, 10).Value
+    wsnewpart.Cells(k, 11).Value = wsresponse.Cells(i, 11).Value
+    wsnewpart.Cells(k, 12).Value = wsresponse.Cells(i, 12).Value
+    wsnewpart.Cells(k, 13).Value = wsresponse.Cells(i, 13).Value
+End Sub
+Sub DoItAllTest()
+'***OPEN FILES ***
+MsgBox "Open UTIL FILE", vbOKCancel + vbQuestion
+Call openUtilFile
+MsgBox "Open NAPG Master", vbOKCancel + vbQuestion
+Call openMasterFile
+MsgBox "Open Resoponse File", vbOKCancel + vbQuestion
+Call openResponseWorkbook
+End Sub
+Sub runNewInvFolderMake()
+'***OPEN FILES ***
+MsgBox "Open RespTemp FILE", vbOKCancel + vbQuestion
+Call openRespTempFile
+'MsgBox "Open NAPG Master", vbOKCancel + vbQuestion
+'Call openMasterFile
+'MsgBox "Open Resoponse File", vbOKCancel + vbQuestion
+'Call openResponseWorkbook
+End Sub
+Sub PostToJP() 'Not ready for production
+MsgBox "Open NAPG Master", vbOKCancel + vbQuestion
+Call openMasterFile
+MsgBox "Open DNJP File", vbOKCancel + vbQuestion
+Call openDnjpFile
+'MsgBox "Open UTIL File", vbOKCancel + vbQuestion
+'Call openUtilFile
+Dim sourcepartnumber As String
+Dim lastrowmaster As Integer
+Dim lastrowdnjp As Integer
+Dim lastrowinv As Integer
+Dim lastrowdem As Integer
+Dim i As Integer
+Dim k As Integer
+Dim m As Integer
+Dim n As Integer
+lastrowmaster = wbmaster.Worksheets(4).Cells(rows.Count, "N").End(xlUp).Row 'last row in source list
+'lastrowinv = wspnutin.Cells(rows.Count, "A").End(xlUp).Row 'last row in INV
+'lastrowdem = wspnutdm.Cells(rows.Count, "A").End(xlUp).Row 'last row in DEM
+k = 4 'beginning row to write on target
+    For i = 3 To lastrowmaster
+        If (wsmaster.Cells(i, 1).Value = "Level 3") Or (wsmaster.Cells(i, 1).Value = "Level 4") Or (wsmaster.Cells(i, 1).Value = "Level 5") Then
+            wsdnjp.Cells(k, 1).Value = "NAPG" ' region
+            wsdnjp.Cells(k, 2).Value = Left(wsmaster.Cells(i, 10).Value, 4) ' OGC
+            wsdnjp.Cells(k, 3).Value = wsmaster.Cells(i, 12).Value  ' Maker/supplier
+            wsdnjp.Cells(k, 4).Value = wsmaster.Cells(i, 14).Value  ' Part number
+            wsdnjp.Cells(k, 5).Value = wsmaster.Cells(i, 16).Value  ' Commodity
+            wsdnjp.Cells(k, 6).Value = wsmaster.Cells(i, 15).Value  ' mfg part number
+            wsdnjp.Cells(k, 12).Value = wsmaster.Cells(i, 23).Value ' inventory
+            wsdnjp.Cells(k, 13).Value = wsmaster.Cells(i, 18).Value + wsmaster.Cells(i, 19).Value ' R + S supplier inv
+            'wsdnjp.Cells(k, 14).Value = wsmaster.Cells(i, xxx).Value ' N - REQ02 - UTIL COL H
+            'wsdnjp.Cells(k, 15).Value = wsmaster.Cells(i, xxx).Value  ' O - REQ03 - UTIL COL J
+            'wsdnjp.Cells(k, 16).Value = wsmaster.Cells(i, xxx).Value  ' P - REQ04 - UTIL COL I
+            wsdnjp.Cells(k, 17).Value = wsmaster.Cells(i, 8).Value   ' Q - runout date master COL H
+            wsdnjp.Cells(k, 18).Value = wsmaster.Cells(i, 1).Value   ' R - risk level master COL A
+            wsdnjp.Cells(k, 20).Value = wsmaster.Cells(i, 22).Value   'T - contermeasure master  COL v
+            wsdnjp.Cells(k, 21).Value = "Global Negotiation"   'U - `Global Negotiation` COL V
+            k = k + 1 'if a write is made then increment to next target
+         End If
+        
+    Next i
+    For m = 4 To lastrowdnjp
+        sourcepartnumber = wsdnjp.Cells(m, 4).Value
+        For n = 1 To lastrowdem
+            If (wspnutin.Cells(n, 1).Value = sourcepartnumber) Then
+                wsdnjp.Cells(m, 14).Value = wspnutdm.Cells(n, 7).Value ' N - REQ02 - UTIL COL H
+                wsdnjp.Cells(m, 15).Value = wsmaster.Cells(n, 8).Value  ' O - REQ03 - UTIL COL i
+                wsdnjp.Cells(m, 16).Value = wsmaster.Cells(n, 9).Value  ' P - REQ04 - UTIL COL j
+            End If
+        Next n
+    Next m
+End Sub
+Sub ShutItDown()
+Call closeMasterFile
+Call closeResponseWorksheet
+End Sub
+Sub closeMasterFile()
+MasterFile.Save
+MasterFile.Close
+End Sub
+Sub closeResponseWorkbook()
+    ResponseFile.Close
+End Sub
+Sub checkTotalSource()
+Dim TotSource As Long
+TotSource = 1
+End Sub
+Sub SuppCompare()
+Call openSUCOMPFile
+Call openCPMASTFile
+End Sub
+Sub makeNewMaster() 'production ready
+Dim lastrowmaster As Integer
+Dim lastrowdnjp As Integer
+Dim i As Integer
+Dim j As Integer
+Dim k As Integer
+'***OPEN FILES ***
+MsgBox "Open NAPG Master", vbOKCancel + vbQuestion
+MsgBox "Create New Tab in Master", vbOKCancel + vbQuestion
+Call openMasterFile
+MsgBox "Open DNJP File FROM PREVIOUS WEEK", vbOKCancel + vbQuestion
+Call openDnjpFile
+'**COUNT ROWS WHERE NEEDED ***
+lastrowdnjp = wbdnjp.Worksheets(3).Cells(rows.Count, 4).End(xlUp).Row 'last row in source list
+Debug.Print lastrowdnjp & " rows in dnjp"
+lastrowmaster = wbmaster.Worksheets(4).Cells(rows.Count, "N").End(xlUp).Row 'last row in source list
+Debug.Print lastrowmaster & " rows in master"
+wbmaster.Worksheets(4).Activate
+ActiveWindow.WindowState = xlMaximized
+'***END LOAD and COUNT***
+For i = 3 To lastrowmaster 'write A and B in new master
+    wsmaster.Cells(i, 3).Value = wsmaster.Cells(i, 1).Value
+    wsmaster.Cells(i, 4).Value = wsmaster.Cells(i, 2).Value
+Next
+i = 0
+j = 0
+'*** Column E'
+For i = 3 To lastrowmaster 'write E in new master if PN matched DNJP for each DNJP
+    For j = 4 To lastrowdnjp: Do 'for each dnjp
+    'Debug.Print i, wsmaster.Cells(i, 14).Value, j, wsdnjp.Cells(j, 4).Value
+        If wsmaster.Cells(i, 14).Value <> wsdnjp.Cells(j, 4).Value Then Exit Do
+        wsmaster.Cells(i, 5).Value = wsdnjp.Cells(j, 18).Value
+        Loop While False: Next j
+Next i
+'***Column F ********************
+For i = 3 To lastrowmaster 'write F and blank H in new master
+    wsmaster.Cells(i, 6).Value = wsmaster.Cells(i, 17).Value
+    wsmaster.Cells(i, 8).Value = "x"
+Next
+'***Column Q R S T V  *********************
+For i = 3 To lastrowmaster 'blank Q R S T V in new master
+    wsmaster.Cells(i, 1).ClearContents
+    wsmaster.Cells(i, 2).ClearContents
+    wsmaster.Cells(i, 17).ClearContents
+    wsmaster.Cells(i, 18).ClearContents
+    wsmaster.Cells(i, 19).ClearContents
+    wsmaster.Cells(i, 20).ClearContents
+    wsmaster.Cells(i, 21).ClearContents
+    wsmaster.Cells(i, 22).ClearContents
+    wsmaster.Cells(i, 23).ClearContents
+    wsmaster.Cells(i, 25).ClearContents
+Next
+'*** Clean up and Notify ***
+wbdnjp.Close
+Range("W2").Select
+MsgBox "NAPG Master File Prep is Complete.  REMEMBER TO SAVE!", vbOKCancel + vbQuestion
+End Sub
+Sub ApplyInvDem()
+'Not ready for production
+Dim q As Integer
+Dim r As Integer
+Dim lastrowtargetinventory As Integer
+Dim lastrowsourceinventory As Integer
+Dim lastrowsourcedemand As Integer
+Dim targetpartnumber As Integer
+Dim targetplant As Integer
+
+lastrowtargetinventory = wbmaster.Worksheets(4).Cells(rows.Count, "N").End(xlUp).Row
+lastrowsourceinventory = wspnutin.Cells(rows.Count, 1).End(xlUp).Row
+lastrowsourcedemand = wspnutdm.Cells(rows.Count, 1).End(xlUp).Row
+
+Debug.Print lastrowtargetinventory, lastrowsourceinventory, lastrowsourcedemand
+    For q = 3 To lastrowtargetinventory
+        targetpartnumber = wsmaster.Cells(q, 10).Value
+        targetplant = wsmaster.Cells(q, 9).Value
+        For r = 2 To lastrowsourceinventory
+            If (wbmaster.Worksheets(4).Cells(q, 10).Value = wspnutin.Cells(r, 1).Value) And (wbmaster.Worksheets(4).Cells(q, 9).Value = wspnutin.Cells(r, 3).Value) Then
+                wbmaster.Worksheets(4).Cells(q, 20).Value = wspnutin.Cells(r, 8).Value
+                Exit For
+            End If
+        Next r
+    Next q
+End Sub
+Sub ApplyRunout()
+'not production ready
+Dim i As Integer
+Dim j As Integer
+Dim k As Integer
+Dim lstrowthisworksheet As Integer
+Dim lastrowmaster As Integer
+Dim sourcerunoutpartnumber As String
+Dim sourcerunoutdate As String
+MsgBox "Download and save NAPC File", vbOKCancel + vbQuestion
+MsgBox "Create Local copy in this weeks folder", vbOKCancel + vbQuestion
+Call openRunoutFile
+MsgBox "Open Master File", vbOKCancel + vbQuestion
+Call openMasterFile
+lstrowthisworksheet = wbrunout.Worksheets(i).Cells(rows.Count, "E").End(xlUp).Row
+For i = 3 To 7
+    For j = 8 To lstrowthisworksheet
+        sourcerunoutpartnumber = wbrunout.Worksheets(i).Cells(j, 5).Value
+        sourcerunoutdate = wbrunout.Worksheets(i).Cells(j, 9).Value
+        'sourcedistributor = wbrunout.Worksheets(i).Cells(i, 4).Value
+            For k = 3 To lastrowmaster
+                If (wsmaster.Cells(k, 14).Value <> sourcerunoutpartnumber) Then
+            
+                    Exit For
+                Else
+                End If
+            Next k
+            
+                    Debug.Print sourcerunoutpartnumber; " not mactched"
+                    'wsmaster.Cells(k, 8).Value = wbrunout.Worksheets(i).Cells(j, 5).Value
+                
+            Exit For
+    Next j
+Debug.Print lstrowthisworksheet; " rows in "; wbrunout.Worksheets(i).Name
+Next i
+End Sub
+
+        
+        'sourceinvqty = wspnutin.Cells(i, 8).Value
+        'sourceinvqty = wspnutin.Cells(i, 8).Value
+        'sourcedistributor = wsresponse.Cells(i, 2).Value
+        'For j = 3 To lastrowtarget
+        'Range(wsmaster.Cells(j, 17)).Select
+           ' If (wsmaster.Cells(j, 14).Value = sourcepartnumber) And (wsmaster.Cells(j, 10).Value = sourceplant) And (wsmaster.Cells(j, 11).Value = sourcedistributor) Then
+            '    wsmaster.Cells(j, 17).Value = wsresponse.Cells(i, 8).Value
+             '   wsmaster.Cells(j, 18).Value = wsresponse.Cells(i, 9).Value
+              '  wsmaster.Cells(j, 19).Value = wsresponse.Cells(i, 10).Value
+               ' wsmaster.Cells(j, 20).Value = wsresponse.Cells(i, 11).Value
+               ' wsmaster.Cells(j, 21).Value = wsresponse.Cells(i, 12).Value
+               ' source_stock = source_stock + Int(wsresponse.Cells(i, 9).Value)
+               ' source_trans = source_trans + Int(wsresponse.Cells(i, 10).Value)
+               ' target_stock = target_stock + Int(wsmaster.Cells(j, 18).Value)
+               ' target_trans = target_trans + Int(wsmaster.Cells(j, 19).Value)
+               ' distributor = wsmaster.Cells(j, 11).Value
+               ''store the last rows carover - name exct.
+                'Debug.Print sourcepartnumber & " was found"
+                'Exit For
+            'End If
+        'Next j
+'End Sub
+
+Sub DoItAllTest2()
+'***OPEN FILES ***
+MsgBox "Open NAPG Master", vbOKCancel + vbQuestion
+Call openMasterFile
+End Sub
+Sub DeleteRow()
+    Dim r As Range, rows As Long, z As Long
+    Set r = wbmaster.Worksheets(4).Range("A600:A1048576")
+    rows = r.rows.Count
+    For z = rows To 1 Step (-1)
+        If WorksheetFunction.CountA(r.rows(z)) = 0 Then r.rows(z).Delete
+        Application.StatusBar = "row " & z & "deleted"
+    Next
+End Sub
+Sub UpdateNAPCFIle()
+'not production ready
+End Sub
+Sub makeRunoutFile()
+'not production ready
+MsgBox "Open NAPG Master", vbOKCancel + vbQuestion
+Call openMasterFile
+MsgBox "Open Runout Pivot File", vbOKCancel + vbQuestion
+Call openRunoutPivotFile
+MsgBox "Open UTIL File", vbOKCancel + vbQuestion
+Call openUtilFile
+Dim sourcedist As String
+Dim lastrowmaster As Integer
+Dim lastrowbuyr As Integer
+Dim i As Integer
+Dim k As Integer
+Dim m As Integer
+Dim n As Integer
+lastrowmaster = wbmaster.Worksheets(4).Cells(rows.Count, "N").End(xlUp).Row 'last row in source list
+lastrowbuyr = wbpnutil.Worksheets(4).Cells(rows.Count, "A").End(xlUp).Row ' Buyer Supplier list
+k = 2 'beginning row to write on target
+    For i = 3 To lastrowmaster
+        If (wsmaster.Cells(i, 1).Value = "Level 4") Or (wsmaster.Cells(i, 1).Value = "Level 5") Then
+            wsrunoutpivot.Cells(k, 1).Value = "BUYER" ' BUYER
+            wsrunoutpivot.Cells(k, 2).Value = wsmaster.Cells(i, 11).Value ' DIST K
+            wsrunoutpivot.Cells(k, 3).Value = wsmaster.Cells(i, 12).Value ' Maker/supplier
+            wsrunoutpivot.Cells(k, 4).Value = wsmaster.Cells(i, 10).Value ' Plant J
+            wsrunoutpivot.Cells(k, 5).Value = wsmaster.Cells(i, 14).Value ' PART M            wsrunoutpivot.Cells(k, 6).Value = wsmaster.Cells(i, 15).Value  ' mfg part number
+            wsrunoutpivot.Cells(k, 6).Value = wsmaster.Cells(i, 8).Value  ' runoutdate
+            k = k + 1 'if a write is made then increment to next target
+         End If
+    Next i
+   For m = 2 To k
+   sourcedist = wsrunoutpivot.Cells(m, 2).Value
+        For n = 2 To lastrowbuyr
+            If (wsrunoutpivot.Cells(n, 2).Value = sourcedist) Then
+                wsrunoutpivot.Cells(m, 1).Value = wspnbuyr.Cells(n, 2).Value ' B UTIL COL B
+            End If
+            Next n
+    Next m
+End Sub
