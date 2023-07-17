@@ -1,5 +1,5 @@
 # VBA
-This VBA was written to automate process used by a team at a large manufacturing concern.
+This VBA was written to automate process used at a large manufacturing concern.
 The previous methods were manual and involved 100's of 'v-lookups' per week.
 These VBA subroutines do mostly a form of “validated transcription”, 
   previously done by someone playing excel like a piano every week for two years.
